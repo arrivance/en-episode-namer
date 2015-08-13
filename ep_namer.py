@@ -2,6 +2,8 @@ import os
 import tvdb_api
 import sys
 
+import hachoir.parser
+
 def debug_print(text): 
     if "-d" in sys.argv: 
         print("DEBUG: ", text)
@@ -21,9 +23,9 @@ def file_renamer(file_item, ep_no, file_extension):
     else:
         ins_ep_no = str(ep_no)
 
-
     if file_extension == None:
         filename, file_extension = os.path.splitext(file_item)
+
     filename = title + " - " + "[" + str(season) + "x" + ins_ep_no + "]" + " - " + episodename  + file_extension
     ep_no += 1
     print("Changed:  " + filename)
@@ -39,26 +41,27 @@ def file_renamer(file_item, ep_no, file_extension):
     print("Changed filename")
     print("---")
 
+def is_vid(filename): 
+    try:
+        file_inst = hachoir.parser.createParser(filename)
+        mimetype = str(file_inst.mime_type)
+    except: 
+        return False
+
+    if "video" in mimetype:
+        return True
+    else:
+        return False
+
 title = str(input("What is the name of the show?: "))
 season = int(input("What season?: "))
-file_format = str(input("What file format(s) are the files stored in? (seperate different formats with a comma): "))
-file_format = file_format.split(',')
-file_format_temp = []
-
-for x in file_format: 
-    x = x.replace(' ', '')
-    file_format_temp.append(x)
-
-file_format = file_format_temp
-del(file_format_temp)
-
 ep_no = 1
 subtitles = str(input("Are there subtitles? y/n: "))
 
-if "-s" in sys.argv: 
-    safe = True
-else:
+if "-a" in sys.argv: 
     safe = False
+else:
+    safe = True
 
 t = tvdb_api.Tvdb()
  
@@ -66,10 +69,11 @@ file_list = os.listdir()
 file_list_temp = []
 
 sub_list = []
+
 for x in file_list:
     filename, file_extension = os.path.splitext(x)
 
-    if file_extension.replace('.', '') in file_format: 
+    if is_vid(x) == True: 
         file_list_temp.append(x)
     elif subtitles == "y" and file_extension == ".srt":
         sub_list.append(x)
