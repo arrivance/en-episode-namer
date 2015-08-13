@@ -58,14 +58,10 @@ def file_renamer(file_item, ep_no, file_extension):
         if verify != "y":
             print("File not changed\n---")
             return False
-        else: 
-            # if it's y, we rename the file
-            os.rename(file_item, filename)
-            return True
+
     # otherwise, we simply rename
-    else:
-        os.rename(file_item, filename)
-        return True
+    os.rename(file_item, filename)
+    return True
     print("Changed filename\n---")
 
 def is_vid(filename): 
