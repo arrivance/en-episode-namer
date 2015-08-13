@@ -1,6 +1,7 @@
 import os
 import tvdb_api
 import sys
+import re
 
 import hachoir.parser
 
@@ -12,11 +13,14 @@ def debug_print(text):
 
 def file_renamer(file_item, ep_no, file_extension):
     print("Original: " + file_item)
-    episode = t[title][season][ep_no]
-    episodename = episode['episodename']
 
-    episodename = episodename.replace('/', '')
-    episodename = episodename.replace(':', '')
+    try:
+        episode = tvdb[title][season][ep_no]
+        episodename = episode['episodename']
+    except:
+        episodename = ""
+
+    episodename = episodename.replace('/', '').replace(':', '').replace('?', '')
     
     if len(str(ep_no)) != 2:
         ins_ep_no = "0" + str(ep_no)
@@ -27,19 +31,21 @@ def file_renamer(file_item, ep_no, file_extension):
         filename, file_extension = os.path.splitext(file_item)
 
     filename = title + " - " + "[" + str(season) + "x" + ins_ep_no + "]" + " - " + episodename  + file_extension
-    ep_no += 1
     print("Changed:  " + filename)
 
     if safe == True:
         verify = input("Are you sure? y/n | ")
         if verify != "y":
-            sys.exit()
+            print("File not changed\n---")
+            return False
         else: 
             os.rename(file_item, filename)
+            return True
     else:
         os.rename(file_item, filename)
-    print("Changed filename")
-    print("---")
+        return True
+    print("Changed filename\n---")
+
 
 def is_vid(filename): 
     try:
@@ -53,9 +59,10 @@ def is_vid(filename):
     else:
         return False
 
+
 title = str(input("What is the name of the show?: "))
-season = int(input("What season?: "))
-ep_no = 1
+epre = re.compile("(E[0-9]{2,2}|x[0-9]{2,2})", re.IGNORECASE)
+seasonre = re.compile("(S[0-9]{2,2}|[0-9]{1,2}x)", re.IGNORECASE)
 subtitles = str(input("Are there subtitles? y/n: "))
 
 if "-a" in sys.argv: 
@@ -63,7 +70,7 @@ if "-a" in sys.argv:
 else:
     safe = True
 
-t = tvdb_api.Tvdb()
+tvdb = tvdb_api.Tvdb()
  
 file_list = os.listdir()
 file_list_temp = []
@@ -84,13 +91,15 @@ file_list = sorted(file_list_temp)
 del(file_list_temp)
 
 debug_print(file_list)
+debug_print(sub_list)
 
 for file_item in file_list: 
+    season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
+    ep_no = int(epre.search(file_item).group(0)[1:])
     file_renamer(file_item, ep_no, None)
 
-print("Proceeding to subtitles...")
-
-ep_no = 1
 if subtitles == "y":
+    print("Proceeding to subtitles...")
     for file_item in sub_list: 
-        file_renamer(file_item, ep_no, ".srt")
+        ep_no = int(epre.search(file_item).group(0)[1:])
+        file_renamer(file_item, ep_no, ".srt") 
