@@ -6,9 +6,9 @@ It's a much simpler, less feature filled version.
 
 ##Pre-requisties: 
 
+- Designed exclusively for Python 3
 - tvdb\_api: install using pip (`pip install tvdb_api`)
 - hachoir 3: install using pip (`pip install hachoir3-superdesk`), or by downloading https://pypi.python.org/pypi/hachoir3-superdesk, extracting it and running `python setup.py install`
-- **The folder with episodes must start from the first episode continiously to whatever episode. It doesn't have to include all the episodes, but they must be chronological, without any gaps.**
 
 ##How-to:
 
