@@ -52,11 +52,11 @@ def file_renamer(file_item, ep_no, file_extension):
     print("Changed:  " + filename)
 
     # if it is on safe mode (default), we add in a verification
-    if safe == True:
+    if "-a" not in sys.argv:
         verify = input("Are you sure? y/n | ")
         # if they don't verify, we skip the file
         if verify != "y":
-            print("File not changed\n---")
+            print("File not changed.\n---")
             return False
 
     # otherwise, we simply rename
@@ -84,12 +84,34 @@ def is_vid(filename):
         # otherwise, we presume it isn't
         return False
 
+def file_filter_vid(file_list):
+    file_filter_temp = []
+    for x in file_list:
+        filename, file_extension = os.path.splitext(x)
 
+        if is_vid(x) == True: 
+            # if its a video, we add it to the list
+            file_filter_temp.append(x)
+        else:
+            # debug output
+            debug_print("non-vid removed " + filename+ " fileext " + file_extension)
+
+    return sorted(file_filter_temp)
+
+def file_filter_sub(file_list):
+    file_filter_temp = []
+    for x in file_list: 
+        if file_extension == ".srt":
+            file_filter_sub.append(x)
+        else:
+            debug_print("non-sub removed " + filename + "fileext" + file_extension)
+
+    return sorted(file_filter_temp)
 
 """
-Variable initilisation
-
+Variables and instances
 """
+
 # we let the user put the name of the show themselves
 title = str(input("What is the name of the show?: "))
 # regex for episode name and season
@@ -98,52 +120,19 @@ epre = re.compile("(E[0-9]{2,2}|x[0-9]{2,2})", re.IGNORECASE)
 seasonre = re.compile("(S[0-9]{2,2}|[0-9]{1,2}x)", re.IGNORECASE)
 # subtitle verification
 subtitles = str(input("Are there subtitles? y/n: "))
-sub_list = []
-
-# list of all files in the directory
-file_list = os.listdir()
-# temporary file list, which we use to filter out non videos
-file_list_temp = []
 
 # instance of tvdb
 tvdb = tvdb_api.Tvdb()
-
-"""
-One time processes
-"""
-# is safe mode on or not
-if "-a" in sys.argv: 
-    safe = False
-else:
-    safe = True
-
-for x in file_list:
-    filename, file_extension = os.path.splitext(x)
-
-    if is_vid(x) == True: 
-        # if its a video, we add it to the list
-        file_list_temp.append(x)
-    elif subtitles == "y" and file_extension == ".srt":
-        # if we are checking for subtitles, (and it is one), we add it 
-        # to the list
-        sub_list.append(x)
-    else:
-        # debug output
-        debug_print("removed " + filename+ " fileext " + file_extension)
-
-# make the file list be the new list, and delete the temp one
-file_list = sorted(file_list_temp)
-del(file_list_temp)
-
-debug_print(file_list)
-debug_print(sub_list)
 
 
 """
 File renaming and handling
 """
 
-for file_item in file_list: 
+vid_list = file_filter_vid(os.listdir())  
+debug_print("list of videos ordered" + str(vid_list))
+
+for file_item in vid_list: 
     filename, file_extension = os.path.splitext(file_item)
     # regex's the file name to find the season and episode number
     season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
@@ -154,6 +143,8 @@ for file_item in file_list:
 # if we're doing subtitles, we repeat the same process but with files in the sub list
 if subtitles == "y":
     print("Proceeding to subtitles...")
+    sub_list = file_filter_sub(os.listdir())
+    debug_print("list of subtitles ordered:" + str(sub_list))
     for file_item in sub_list: 
         season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
         ep_no = int(epre.search(file_item).group(0)[1:])
