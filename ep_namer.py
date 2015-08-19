@@ -22,10 +22,10 @@ def file_renamer(file_item):
     season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
     ep_no = int(epre.search(file_item).group(0)[1:])
     # calls the file renamer function
-    file_rename = ep_lib_inst.file_renamer_prep(file_item, ep_no, season)
+    file_rename = ep_lib_inst.file_renamer_prep(ep_no, season)
 
-    print("Original: " + file_item + file_extension)
-    print("Changed: " + file_rename)
+    print("Original: " + file_item)
+    print("Changed:  " + file_rename + file_extension)
 
     # if it is on safe mode (default), we add in a verification
     if options["aggressive"] == False:
@@ -77,7 +77,7 @@ ep_lib_inst.debug_print("list of videos ordered: " + str(vid_list))
 
 for file_item in vid_list: 
     # regex's the file name to find the season and episode number
-    try
+    try:
         file_renamer(file_item)
     except:
         print("An error occured while trying to rename the file " + file_item)

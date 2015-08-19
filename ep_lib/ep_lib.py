@@ -49,7 +49,7 @@ class ep_func():
             ep_no = str(ep_no)
 
         # we make the filename in the format
-        filename = self.options["title"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename
+        filename = self.options["showname"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename
 
         return filename
  
