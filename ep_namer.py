@@ -18,7 +18,7 @@ def debug_print(text):
 
     return None
 
-def file_renamer(file_item, ep_no, file_extension):
+def file_renamer(file_item, ep_no, season, file_extension):
     """
     Renames files in the structure:
     Title - [SEASONxEPISODE] - Name of Episode
@@ -158,10 +158,13 @@ debug_print("list of videos ordered: " + str(vid_list))
 for file_item in vid_list: 
     filename, file_extension = os.path.splitext(file_item)
     # regex's the file name to find the season and episode number
-    season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
-    ep_no = int(epre.search(file_item).group(0)[1:])
-    # calls the file renamer function
-    file_renamer(file_item, ep_no, file_extension)
+    try:
+        season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
+        ep_no = int(epre.search(file_item).group(0)[1:])
+        # calls the file renamer function
+        file_renamer(file_item, ep_no, season, file_extension)
+    except:
+        print("Unable to find the season/episode number for file: " + file_item)
 
 # if we're doing subtitles, we repeat the same process but with files in the sub list
 if options['subtitles'] == True:
@@ -169,6 +172,9 @@ if options['subtitles'] == True:
     sub_list = file_filter_sub(os.listdir())
     debug_print("list of subtitles ordered:" + str(sub_list))
     for file_item in sub_list: 
-        season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
-        ep_no = int(epre.search(file_item).group(0)[1:])
-        file_renamer(file_item, ep_no, ".srt") 
+        try:
+            season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
+            ep_no = int(epre.search(file_item).group(0)[1:])
+            file_renamer(file_item, ep_no, season, ".srt") 
+        except:
+            print("Unable to find the season/episode number for file: " + file_item)
