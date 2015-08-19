@@ -13,7 +13,7 @@ def debug_print(text):
     """
     Prints verbose output if -d is in the flags
     """
-    if "-d" in sys.argv: 
+    if options["debug"] == True: 
         print("DEBUG: ", text)
 
     return None
@@ -23,11 +23,14 @@ def file_renamer(file_item, ep_no, file_extension):
     Renames files in the structure:
     Title - [SEASONxEPISODE] - Name of Episode
     """
+
+    # instance of tvdb
+    tvdb = tvdb_api.Tvdb()
     print("Original: " + file_item)
 
     try:
         # attempts to contact tvdb for the episode name
-        episode = tvdb[title][season][ep_no]
+        episode = tvdb[options['title']][season][ep_no]
         episodename = episode['episodename']
     except:
         # if it fails we leave it blank
@@ -39,20 +42,20 @@ def file_renamer(file_item, ep_no, file_extension):
     # if the episode number is 1 digit, we up it to 2 by prefixing an 0
     # so 1 would become 01
     if len(str(ep_no)) != 2:
-        ins_ep_no = "0" + str(ep_no)
+        ep_no = "0" + str(ep_no)
     else:
-        ins_ep_no = str(ep_no)
+        ep_no = str(ep_no)
     # if no file extension is passed as an argument, we take the previous items' one
     if file_extension == None:
         filename, file_extension = os.path.splitext(file_item)
 
     # we make the filename in the format
-    filename = title + " - [" + str(season) + "x" + ins_ep_no + "] - " + episodename  + file_extension
+    filename = options['title'] + " - [" + str(season) + "x" + ep_no + "] - " + episodename  + file_extension
     # print out the filename 
     print("Changed:  " + filename)
 
     # if it is on safe mode (default), we add in a verification
-    if "-a" not in sys.argv:
+    if options["aggressive"] == False:
         verify = input("Are you sure? y/n | ")
         # if they don't verify, we skip the file
         if verify != "y":
@@ -61,8 +64,8 @@ def file_renamer(file_item, ep_no, file_extension):
 
     # otherwise, we simply rename
     os.rename(file_item, filename)
-    return True
     print("Changed filename\n---")
+    return True
 
 def is_vid(filename): 
     """
@@ -108,29 +111,49 @@ def file_filter_sub(file_list):
 
     return sorted(file_filter_temp)
 
+def argument_parser(args):
+    is_arg_true = {} 
+    for argument in args: 
+        if argument in sys.argv:
+            is_arg_true[args[argument]] = True
+        else:
+            is_arg_true[args[argument]] = False
+    return is_arg_true
+
 """
 Variables and instances
 """
 
+argument_options = {
+    "-a": "aggressive",
+    "-d": "debug"
+} 
+
+options = argument_parser(argument_options)
+debug_print(options)
+
 # we let the user put the name of the show themselves
-title = str(input("What is the name of the show?: "))
+options['title'] = str(input("What is the name of the show?: "))
+# subtitle verification
+options['subtitles'] = str(input("Are there subtitles? y/n: "))
+
+if options['subtitles'] == "y":
+    options['subtitles'] = True
+else:
+    options['subtitles'] = False
+
+
 # regex for episode name and season
 # works for S13E10 and [13x10] formats
 epre = re.compile("(E[0-9]{2,2}|x[0-9]{2,2})", re.IGNORECASE)
 seasonre = re.compile("(S[0-9]{2,2}|[0-9]{1,2}x)", re.IGNORECASE)
-# subtitle verification
-subtitles = str(input("Are there subtitles? y/n: "))
-
-# instance of tvdb
-tvdb = tvdb_api.Tvdb()
-
 
 """
 File renaming and handling
 """
 
 vid_list = file_filter_vid(os.listdir())  
-debug_print("list of videos ordered" + str(vid_list))
+debug_print("list of videos ordered: " + str(vid_list))
 
 for file_item in vid_list: 
     filename, file_extension = os.path.splitext(file_item)
@@ -141,7 +164,7 @@ for file_item in vid_list:
     file_renamer(file_item, ep_no, file_extension)
 
 # if we're doing subtitles, we repeat the same process but with files in the sub list
-if subtitles == "y":
+if options['subtitles'] == True:
     print("Proceeding to subtitles...")
     sub_list = file_filter_sub(os.listdir())
     debug_print("list of subtitles ordered:" + str(sub_list))
