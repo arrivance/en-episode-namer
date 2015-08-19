@@ -9,7 +9,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(name='ep_namer',
-      version='0.9.1',
+      version='0.9.3',
       description='Names TV episode files in a folder based on input and a filename.',
       author='Bevan Philip',
       author_email='arrivance@gmail.com',

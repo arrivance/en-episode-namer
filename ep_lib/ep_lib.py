@@ -25,7 +25,7 @@ class ep_func():
     def file_renamer(self, file_item, ep_no, season):
         """
         Renames files in the structure:
-        Title - [SEASONxEPISODE] - Name of Episode
+        Showname - [SIDxEPID] - Episode Name
         """
 
         filename, file_extension = os.path.splitext(file_item)
@@ -36,7 +36,7 @@ class ep_func():
 
         try:
             # attempts to contact tvdb for the episode name
-            episode = tvdb[self.options["title"]][season][ep_no]
+            episode = tvdb[self.options["showname"]][season][ep_no]
             episodename = episode["episodename"]
         except:
             # if it fails we leave it blank
@@ -93,6 +93,9 @@ class ep_func():
             return False
 
     def file_filter_vid(self, file_list):
+        """
+        Filters videos from the file list
+        """
         file_filter_temp = []
         for file_item in file_list:
             if self.is_vid(file_item) == True: 
@@ -105,6 +108,9 @@ class ep_func():
         return sorted(file_filter_temp)
 
     def file_filter_sub(self, file_list):
+        """
+        Filters subtitles from the file list
+        """
         file_filter_temp = []
         for file_item in file_list: 
             filename, file_extension = os.path.splitext(file_item)

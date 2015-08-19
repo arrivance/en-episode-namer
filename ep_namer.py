@@ -5,7 +5,7 @@ import re
 from ep_lib import ep_lib
 
 """
-Variables and instances
+Local functions
 """
 
 def argument_parser(args):
@@ -17,6 +17,10 @@ def argument_parser(args):
             is_arg_true[args[argument]] = False
     return is_arg_true
 
+"""
+Variables and instances
+"""
+
 argument_options = {
     "-a": "aggressive",
     "-d": "debug"
@@ -24,7 +28,7 @@ argument_options = {
 
 options = argument_parser(argument_options)
 # we let the user put the name of the show themselves
-options["title"] = str(input("What is the name of the show?: "))
+options["showname"] = str(input("What is the name of the show?: "))
 # subtitle verification
 options["subtitles"] = str(input("Are there subtitles? y/n: "))
 
