@@ -4,18 +4,15 @@ As [TVNamer](https://github.com/dbr/tvnamer) failed to work for me, here is a TV
 
 It's a much simpler, less feature filled version.
 
-##Pre-requisties: 
-
 - Designed exclusively for Python 3
-- All dependencies are in dependencies.txt.
 
-##How-to:
+##Installation:
 
-- Download ep_namer.py
-- Place it in the folder containing all the media you wish to rename.
-- Run ep_namer.py
-    - Note: If you wish to verify all the files you can naming, open up a command prompt in the folder with ep_namer, and type: `ep_namer.py -s`
-- Follow the instructions
+- Download the latest version from the Releases tab at the top.
+- Place the files into a folder, and open up a command prompt (Shift Right-Click > Open command window here)
+- Type in `python setup.py install`
+- Type ep_namer in the folder you wish to rename files in. 
+- Follow the instructions.
 
 ##Features:
 

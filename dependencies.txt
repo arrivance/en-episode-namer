@@ -1,5 +1,0 @@
-hachoir3-superdesk==3.0a1.post2
-requests==2.7.0
-requests-cache==0.4.10
-tvdb-api==1.10
-
