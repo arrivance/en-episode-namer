@@ -18,11 +18,13 @@ def debug_print(text):
 
     return None
 
-def file_renamer(file_item, ep_no, season, file_extension):
+def file_renamer(file_item, ep_no, season):
     """
     Renames files in the structure:
     Title - [SEASONxEPISODE] - Name of Episode
     """
+
+    filename, file_extension = os.path.splitext(file_item)
 
     # instance of tvdb
     tvdb = tvdb_api.Tvdb()
@@ -45,9 +47,6 @@ def file_renamer(file_item, ep_no, season, file_extension):
         ep_no = "0" + str(ep_no)
     else:
         ep_no = str(ep_no)
-    # if no file extension is passed as an argument, we take the previous items" one
-    if file_extension == None:
-        filename, file_extension = os.path.splitext(file_item)
 
     # we make the filename in the format
     filename = options["title"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename  + file_extension
@@ -80,34 +79,35 @@ def is_vid(filename):
         # if it fails, we presume it isn"t a video
         return False
 
-    if "video" in mimetype:
-        # if the mime has video in it, we presume it is a video
+    debug_print("Mimetype of " + filename + " : " + mimetype) 
+
+    if mimetype[0:5] == "video":
+        # if the mimetype starts with video, it's a video!
         return True
     else:
-        # otherwise, we presume it isn"t
+        # otherwise, we presume it isn't
         return False
 
 def file_filter_vid(file_list):
     file_filter_temp = []
-    for x in file_list:
-        filename, file_extension = os.path.splitext(x)
-
-        if is_vid(x) == True: 
+    for file_item in file_list:
+        if is_vid(file_item) == True: 
             # if its a video, we add it to the list
-            file_filter_temp.append(x)
+            file_filter_temp.append(file_item)
         else:
             # debug output
-            debug_print("non-vid removed " + filename+ " fileext " + file_extension)
+            debug_print("non-vid removed " + file_item)
 
     return sorted(file_filter_temp)
 
 def file_filter_sub(file_list):
     file_filter_temp = []
-    for x in file_list: 
+    for file_item in file_list: 
+        filename, file_extension = os.path.splitext(file_item)
         if file_extension == ".srt":
-            file_filter_sub.append(x)
+            file_filter_temp.append(file_item)
         else:
-            debug_print("non-sub removed " + filename + "fileext" + file_extension)
+            debug_print("non-sub removed " + file_item)
 
     return sorted(file_filter_temp)
 
@@ -130,7 +130,6 @@ argument_options = {
 } 
 
 options = argument_parser(argument_options)
-debug_print(options)
 
 # we let the user put the name of the show themselves
 options["title"] = str(input("What is the name of the show?: "))
@@ -141,6 +140,8 @@ if options["subtitles"] == "y":
     options["subtitles"] = True
 else:
     options["subtitles"] = False
+
+debug_print(options)
 
 
 # regex for episode name and season
@@ -156,13 +157,12 @@ vid_list = file_filter_vid(os.listdir())
 debug_print("list of videos ordered: " + str(vid_list))
 
 for file_item in vid_list: 
-    filename, file_extension = os.path.splitext(file_item)
     # regex"s the file name to find the season and episode number
     try:
         season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
         ep_no = int(epre.search(file_item).group(0)[1:])
         # calls the file renamer function
-        file_renamer(file_item, ep_no, season, file_extension)
+        file_renamer(file_item, ep_no, season)
     except:
         print("Unable to find the season/episode number for file: " + file_item)
 
@@ -175,6 +175,6 @@ if options["subtitles"] == True:
         try:
             season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
             ep_no = int(epre.search(file_item).group(0)[1:])
-            file_renamer(file_item, ep_no, season, ".srt") 
+            file_renamer(file_item, ep_no, season) 
         except:
             print("Unable to find the season/episode number for file: " + file_item)
