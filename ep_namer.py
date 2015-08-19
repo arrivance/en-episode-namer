@@ -30,14 +30,14 @@ def file_renamer(file_item, ep_no, season, file_extension):
 
     try:
         # attempts to contact tvdb for the episode name
-        episode = tvdb[options['title']][season][ep_no]
-        episodename = episode['episodename']
+        episode = tvdb[options["title"]][season][ep_no]
+        episodename = episode["episodename"]
     except:
         # if it fails we leave it blank
         episodename = ""
 
-    # replaces invalid characters that can't be file names
-    episodename = episodename.replace('/', '').replace(':', '').replace('?', '')
+    # replaces invalid characters that can"t be file names
+    episodename = episodename.replace("/", "").replace(":", "").replace("?", "")
     
     # if the episode number is 1 digit, we up it to 2 by prefixing an 0
     # so 1 would become 01
@@ -45,19 +45,19 @@ def file_renamer(file_item, ep_no, season, file_extension):
         ep_no = "0" + str(ep_no)
     else:
         ep_no = str(ep_no)
-    # if no file extension is passed as an argument, we take the previous items' one
+    # if no file extension is passed as an argument, we take the previous items" one
     if file_extension == None:
         filename, file_extension = os.path.splitext(file_item)
 
     # we make the filename in the format
-    filename = options['title'] + " - [" + str(season) + "x" + ep_no + "] - " + episodename  + file_extension
+    filename = options["title"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename  + file_extension
     # print out the filename 
     print("Changed:  " + filename)
 
     # if it is on safe mode (default), we add in a verification
     if options["aggressive"] == False:
         verify = input("Are you sure? y/n | ")
-        # if they don't verify, we skip the file
+        # if they don"t verify, we skip the file
         if verify != "y":
             print("File not changed.\n---")
             return False
@@ -77,14 +77,14 @@ def is_vid(filename):
         file_inst = hachoir.parser.createParser(filename)
         mimetype = str(file_inst.mime_type)
     except: 
-        # if it fails, we presume it isn't a video
+        # if it fails, we presume it isn"t a video
         return False
 
     if "video" in mimetype:
         # if the mime has video in it, we presume it is a video
         return True
     else:
-        # otherwise, we presume it isn't
+        # otherwise, we presume it isn"t
         return False
 
 def file_filter_vid(file_list):
@@ -133,14 +133,14 @@ options = argument_parser(argument_options)
 debug_print(options)
 
 # we let the user put the name of the show themselves
-options['title'] = str(input("What is the name of the show?: "))
+options["title"] = str(input("What is the name of the show?: "))
 # subtitle verification
-options['subtitles'] = str(input("Are there subtitles? y/n: "))
+options["subtitles"] = str(input("Are there subtitles? y/n: "))
 
-if options['subtitles'] == "y":
-    options['subtitles'] = True
+if options["subtitles"] == "y":
+    options["subtitles"] = True
 else:
-    options['subtitles'] = False
+    options["subtitles"] = False
 
 
 # regex for episode name and season
@@ -157,7 +157,7 @@ debug_print("list of videos ordered: " + str(vid_list))
 
 for file_item in vid_list: 
     filename, file_extension = os.path.splitext(file_item)
-    # regex's the file name to find the season and episode number
+    # regex"s the file name to find the season and episode number
     try:
         season = int(seasonre.search(file_item).group(0).replace("x", "").replace("s", "").replace("X", "").replace("S", ""))
         ep_no = int(epre.search(file_item).group(0)[1:])
@@ -166,8 +166,8 @@ for file_item in vid_list:
     except:
         print("Unable to find the season/episode number for file: " + file_item)
 
-# if we're doing subtitles, we repeat the same process but with files in the sub list
-if options['subtitles'] == True:
+# if we"re doing subtitles, we repeat the same process but with files in the sub list
+if options["subtitles"] == True:
     print("Proceeding to subtitles...")
     sub_list = file_filter_sub(os.listdir())
     debug_print("list of subtitles ordered:" + str(sub_list))
