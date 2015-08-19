@@ -7,8 +7,7 @@ It's a much simpler, less feature filled version.
 ##Pre-requisties: 
 
 - Designed exclusively for Python 3
-- tvdb\_api: install using pip (`pip install tvdb_api`)
-- hachoir 3: install using pip (`pip install hachoir3-superdesk`), or by downloading https://pypi.python.org/pypi/hachoir3-superdesk, extracting it and running `python setup.py install`
+- All dependencies are in dependencies.txt.
 
 ##How-to:
 
@@ -30,4 +29,4 @@ It's a much simpler, less feature filled version.
 - '-a': aggressive mode, requires no verification for renaming files
 
 
-#Licensing terms in LICENSE.md. 
+##Licensing terms in LICENSE.md. 
