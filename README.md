@@ -26,4 +26,4 @@ It's a much simpler, less feature filled version.
 - '-a': aggressive mode, requires no verification for renaming files
 
 
-##Licensing terms in LICENSE.md. 
+###Licensing terms in LICENSE.md. 

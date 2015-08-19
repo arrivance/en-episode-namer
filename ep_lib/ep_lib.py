@@ -22,17 +22,13 @@ class ep_func():
 
         return None
 
-    def file_renamer(self, file_item, ep_no, season):
+    def file_renamer_prep(self, ep_no, season):
         """
-        Renames files in the structure:
-        Showname - [SIDxEPID] - Episode Name
+        Prepares a file name 
         """
-
-        filename, file_extension = os.path.splitext(file_item)
 
         # instance of tvdb
         tvdb = tvdb_api.Tvdb()
-        print("Original: " + file_item)
 
         try:
             # attempts to contact tvdb for the episode name
@@ -53,21 +49,25 @@ class ep_func():
             ep_no = str(ep_no)
 
         # we make the filename in the format
-        filename = self.options["title"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename  + file_extension
-        # print out the filename 
-        print("Changed:  " + filename)
+        filename = self.options["title"] + " - [" + str(season) + "x" + ep_no + "] - " + episodename
 
-        # if it is on safe mode (default), we add in a verification
-        if self.options["aggressive"] == False:
-            verify = input("Are you sure? y/n | ")
-            # if they don"t verify, we skip the file
-            if verify != "y":
-                print("File not changed.\n---")
-                return False
+        return filename
+ 
+    def file_renamer(self, file_item, file_rename):
+        """
+        Adds the file extension to the file name generated, and
+        renames the file.
+        """
+        filename, file_extension = os.path.splitext(file_item)
+        file_rename = file_rename + file_extension
 
-        # otherwise, we simply rename
-        os.rename(file_item, filename)
-        print("Changed filename\n---")
+        try:
+            os.rename(file_item, file_rename)
+        except (IOError, OSError) as exception:
+            print("An error occured when trying to rename the file. It may currently be in use.")
+            debug_print(exception)
+        except:
+            print("An unknown error occured while trying to rename to the file.")
         return True
 
     def is_vid(self, filename): 
@@ -80,7 +80,7 @@ class ep_func():
             file_inst = hachoir.parser.createParser(filename)
             mimetype = str(file_inst.mime_type)
         except: 
-            # if it fails, we presume it isn"t a video
+            # if it fails, we presume it isn't a video
             return False
 
         self.debug_print("Mimetype of " + filename + " : " + mimetype) 
