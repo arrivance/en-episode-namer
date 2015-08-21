@@ -8,7 +8,7 @@ from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-setup(name='ep_namer',
+setup(name='epNamer',
       version='0.10.0',
       description='Names TV episode files in a folder based on input and a filename.',
       author='Bevan Philip',
