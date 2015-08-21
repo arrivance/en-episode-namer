@@ -13,12 +13,16 @@ class epNamerLibFunc():
         self.debug = debug
 
     def debugOutput(self, text): 
-        """
-        Prints verbose output if -d is in the flags
-        """
+        """Prints verbose output if -d is in the flags"""
         if self.debug == True: 
             print("DEBUG: ", text)
 
+        pass
+
+    def debugRaise(self, error):
+        """Instead of ignoring errors, raises them if debug is one"""
+        if self.debug == True:
+            raise error
         pass
 
     def episodeNamer(self, episodeNumber, season, showName):
@@ -29,18 +33,17 @@ class epNamerLibFunc():
 
         # attempts to contact tvdb for the episode name
         showInstance = tvdb[showName]
-        episodeInstance = show_instance[season][episodeNumber]
+        # episode number
+        episodeName = showInstance[season][episodeNumber]["episodename"]
         # we might have the showname, /but/ it might not be properly capitalized
         showName = showInstance["seriesname"]
-        episodeName = episodeInstance["episodename"]
 
         # replaces invalid characters that can"t be file names
         episodeName = episodeName.replace("/", "").replace(":", "").replace("?", "")
         
         # if the episode number is 1 digit, we up it to 2 by prefixing an 0
         # so 1 would become 01
-        if len(str(episodeNumber)) != 2:
-            episodeNumber = "0" + str(episodeNumber)
+        if len(str(episodeNumber)) != 2: episodeNumber = "0" + str(episodeNumber)
 
         # we make the filename in the format
         fileName = showName + " - [" + str(season) + "x" + str(episodeNumber) + "] - " + episodeName
@@ -63,11 +66,9 @@ class epNamerLibFunc():
             fileInstance = hachoir.parser.createParser(fileName)
             mimetype = str(fileInstance.mime_type)
         except Exception as e: 
-            # it isn't the programs responsibility to handle messed up files
-            # so we just don't bother raising the exception, and simply
-            # return False
-            self.debug_print(e)
-            # if it fails, we presume it isn't a video
+            # it'll fail on subtitles, but rather than crashing, we 
+            # simply ignore it and assume the error 100% confirms
+            # it isn't a video
             return False
 
         if mimetype[0:5] == "video":
@@ -86,12 +87,12 @@ class epNamerLibFunc():
                 fileFilterTemp.append(fileItem)
             else:
                 # debug output
-                self.debug_print("non-vid removed " + fileItem)
+                self.debugOutput("non-vid removed " + fileItem)
 
         return sorted(fileFilterTemp)
 
     def fileFilterSub(self, fileList):
-    """Filters subtitles from the file list"""
+        """Filters subtitles from the file list"""
 
         fileFilterTemp = []
         for fileItem in fileList: 
@@ -99,7 +100,7 @@ class epNamerLibFunc():
             if fileExtension == ".srt":
                 fileFilterTemp.append(fileItem)
             else:
-                self.debug_print("non-sub removed " + fileItem)
+                self.debugOutput("non-sub removed " + fileItem)
 
         return sorted(fileFilterTemp)
 

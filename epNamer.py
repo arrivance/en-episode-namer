@@ -2,7 +2,7 @@ import os
 import sys
 import re
 
-from epNamerLib import epNamerLibFunc
+from epNamerLib import epNamerLib
 
 """
 Local functions
@@ -27,10 +27,10 @@ def episodeRenamer(fileItem):
     try:
         fileNewName = epNamerLibInst.episodeNamer(epNumber, season, options["showname"])
     except Exception as e:
-        if "tvdb_shownotfound" in e:
+        if "tvdb_shownotfound" in str(e):
             print("Showname not found in the TVDB_API.")
             sys.exit()
-        epNamerLibInst.debugOutput(e)
+        epNamerLibInst.debugRaise(e)
         raise e
 
     print("Original: " + fileItem)
@@ -48,7 +48,7 @@ def episodeRenamer(fileItem):
             epNamerLibInst.fileRenamer(fileItem, fileNewName)
         except Exception as e:
             print("An error occured while trying to rename the file.")
-            epNamerLibInst.debugOutput(e)
+            epNamerLibInst.debugRaise(e)
         else:
             print("Changed filename\n---")
 
@@ -93,6 +93,7 @@ for fileItem in vidList:
         episodeRenamer(fileItem)
     except Exception as e:
         print("An error occured while trying to rename the file " + fileItem)
+        epNamerLibInst.debugRaise(e)
 
 # if we"re doing subtitles, we repeat the same process but with files in the sub list
 if options["subtitles"] in acceptableInputs:
@@ -101,6 +102,7 @@ if options["subtitles"] in acceptableInputs:
     epNamerLibInst.debugOutput("list of subtitles ordered:" + str(subList))
     for fileItem in subList: 
         try:
-            episodeNamer(fileItem)
-        except:
+            episodeRenamer(fileItem)
+        except Exception as e:
+            epNamerLibInst.debugRaise(e)
             print("An error occured while trying to rename the file " + fileItem)
