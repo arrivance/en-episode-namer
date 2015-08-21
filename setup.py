@@ -9,12 +9,12 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(name='ep_namer',
-      version='0.9.7',
+      version='0.10.0',
       description='Names TV episode files in a folder based on input and a filename.',
       author='Bevan Philip',
       author_email='arrivance@gmail.com',
       url='http://github.com/arrivance/ep_namer',
-      packages=['ep_lib'],
+      packages=['epNamerLib'],
       license='MIT',
 
 	  classifiers=[
@@ -37,6 +37,6 @@ setup(name='ep_namer',
 
       install_requires=['tvdb_api', 'hachoir3-superdesk'],
 
-      scripts=['ep_namer.py']
+      scripts=['epNamer.py']
      )
 

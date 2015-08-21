@@ -1,9 +1,6 @@
 # episode namer
 
-As [TVNamer](https://github.com/dbr/tvnamer) failed to work for me, here is a TV show namer using the [tvdb\_api](https://github.com/dbr/tvdb_api).
-
-It's a much simpler, less feature filled version.
-
+An alternative to [TVNamer](https://github.com/dbr/tvnamer), built using the [tvdb\_api](https://github.com/dbr/tvdb_api).
 - Designed exclusively for Python 3
 
 ##Installation:
@@ -18,6 +15,7 @@ It's a much simpler, less feature filled version.
 
 - Names files in the format 
     - `Showname - [SIDxEPID] - Episode Name`
+    - with the Episode Name being pulled from tvdb.
 - Allows for subtitles to be renamed
 
 ##Command arguments: 
