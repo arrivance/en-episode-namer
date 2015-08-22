@@ -31,7 +31,6 @@ def episodeRenamer(fileItem):
             print("Showname not found in the TVDB_API.")
             sys.exit()
         epNamerLibInst.debugRaise(e)
-        raise e
 
     print("Original: " + fileItem)
     print("Changed:  " + fileNewName + fileExtension)
@@ -43,14 +42,13 @@ def episodeRenamer(fileItem):
         if verify != "y":
             print("File not changed.\n---")
             return False
+    try:
+        epNamerLibInst.fileRenamer(fileItem, fileNewName)
+    except Exception as e:
+        print("An error occured while trying to rename the file.")
+        epNamerLibInst.debugRaise(e)
     else:
-        try:
-            epNamerLibInst.fileRenamer(fileItem, fileNewName)
-        except Exception as e:
-            print("An error occured while trying to rename the file.")
-            epNamerLibInst.debugRaise(e)
-        else:
-            print("Changed filename\n---")
+        print("Changed filename\n---")
 
 """
 Variables and instances
@@ -61,10 +59,10 @@ argumentOptions = {
     "-d": "debug"
 } 
 
-acceptableInputs = [
+acceptableInputs = (
     "yes", 
     "y"
-]
+)
 
 options = argumentParser(argumentOptions)
 # we let the user put the name of the show themselves
