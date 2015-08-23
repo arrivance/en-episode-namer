@@ -9,8 +9,8 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(name='epNamer',
-      version='0.10.1',
-      description='Names TV episode files in a folder based on input and a filename.',
+      version='0.11.4',
+      description='Names TV episode files in a folder based the filename and user input.',
       author='Bevan Philip',
       author_email='arrivance@gmail.com',
       url='http://github.com/arrivance/ep_namer',
@@ -33,7 +33,7 @@ setup(name='epNamer',
 	    'Programming Language :: Python :: 3.4',
     ],
 
-      keywords='tv, episode namer, ep_namer, tvnamer',
+      keywords='tv, episode namer, ep_namer, tvnamer, epnamer',
 
       install_requires=['tvdb_api', 'hachoir3-superdesk'],
 

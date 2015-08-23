@@ -8,14 +8,14 @@ from epNamerLib import epNamerLib
 Local functions
 """
 
-def argumentParser(args):
+def argumentParser(listOfArguments):
     """Parses arguments"""
     argumentParserFilter = {} 
-    for argument in args: 
+    for argument in listOfArguments: 
         if argument in sys.argv:
-            argumentParserFilter[args[argument]] = True
+            argumentParserFilter[listOfArguments[argument]] = True
         else:
-            argumentParserFilter[args[argument]] = False
+            argumentParserFilter[listOfArguments[argument]] = False
     return argumentParserFilter
 
 def episodeRenamer(fileItem):
@@ -30,7 +30,7 @@ def episodeRenamer(fileItem):
         if "tvdb_shownotfound" in str(e):
             print("Showname not found in the TVDB_API.")
             sys.exit()
-        epNamerLibInst.debugRaise(e)
+        raise e
 
     print("Original: " + fileItem)
     print("Changed:  " + fileNewName + fileExtension)
@@ -76,7 +76,7 @@ epNamerLibInst.debugOutput(options)
 # regex for episode name and season
 # works for S13E10 and [13x10] formats
 epRe = re.compile("(E[0-9]{2,2}|x[0-9]{2,2})", re.IGNORECASE)
-seasonRe = re.compile("(S[0-9]{2,2}|[0-9]{1,2}x)", re.IGNORECASE)
+seasonRe = re.compile("(S[0-9]{1,2}|[0-9]{1,2}x)", re.IGNORECASE)
 
 """
 File renaming and handling

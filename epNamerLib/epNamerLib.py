@@ -14,6 +14,7 @@ class epNamerLibFunc():
 
     def debugOutput(self, text): 
         """Prints verbose output if -d is in the flags"""
+        print(self.debug)
         if self.debug == True: 
             print("DEBUG: ", text)
 
@@ -58,7 +59,7 @@ class epNamerLibFunc():
 
         os.rename(fileItem, fileNewName)
 
-    def is_vid(self, fileName): 
+    def fileIsVid(self, fileName): 
         """Uses the hachoir library to determine whether the file is a video"""
 
         try:
@@ -82,13 +83,12 @@ class epNamerLibFunc():
 
         fileFilterTemp = []
         for fileItem in fileList:
-            if self.is_vid(fileItem) == True: 
+            if self.fileIsVid(fileItem) == True: 
                 # if its a video, we add it to the list
                 fileFilterTemp.append(fileItem)
             else:
                 # debug output
                 self.debugOutput("non-vid removed " + fileItem)
-
         return sorted(fileFilterTemp)
 
     def fileFilterSub(self, fileList):
