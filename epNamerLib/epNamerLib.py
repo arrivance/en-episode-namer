@@ -14,7 +14,6 @@ class epNamerLibFunc():
 
     def debugOutput(self, text): 
         """Prints verbose output if -d is in the flags"""
-        print(self.debug)
         if self.debug == True: 
             print("DEBUG: ", text)
 
@@ -103,4 +102,3 @@ class epNamerLibFunc():
                 self.debugOutput("non-sub removed " + fileItem)
 
         return sorted(fileFilterTemp)
-
