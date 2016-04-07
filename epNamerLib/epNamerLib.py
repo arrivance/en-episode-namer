@@ -44,6 +44,7 @@ class epNamerLibFunc():
         # if the episode number is 1 digit, we up it to 2 by prefixing an 0
         # so 1 would become 01
         if len(str(episodeNumber)) != 2: episodeNumber = "0" + str(episodeNumber)
+        if len(str(season)) != 2: season = "0" + str(season) # same for season
 
         # we make the filename in the format
         fileName = showName + " - [" + str(season) + "x" + str(episodeNumber) + "] - " + episodeName
